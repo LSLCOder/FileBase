@@ -1,0 +1,124 @@
+/* Login */
+.Login-form-container {
+    display: none;  
+    position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 450px;
+	padding: 40px;
+	transform: translate(-50%, -50%);
+	background: rgb(255, 255, 255);
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0,0,0,.6);
+	border-radius: 10px;
+	animation: fadeIn 1.6s ease forwards; 
+	z-index: 5;
+}
+
+.Login-form-container .input input:focus {
+    border-color: #5900ff; 
+}
+
+.header-login {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.Login-form-container .field {
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+}
+
+.Login-form-container .input input {
+    height: 40px;
+    font-size: var(--font-size-sm);
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid var(--secondary-color);
+    outline: none;
+}
+
+/* Signup */
+.Signup-form-container {
+    display: none;  
+    position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 450px;
+	padding: 40px;
+	transform: translate(-50%, -50%);
+	background: rgb(255, 255, 255);
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0,0,0,.6);
+	border-radius: 10px;
+	animation: fadeIn 1.6s ease forwards; 
+	z-index: 5;
+}
+
+.Signup-form-container .input input:focus {
+    border-color: #5900ff; 
+}
+
+.header-signup {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.Signup-form-container .field {
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+}
+
+.Signup-form-container .input input {
+    height: 40px;
+    font-size: var(--font-size-sm);
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid var(--secondary-color);
+    outline: none;
+}
+
+/* General */
+.btn {
+    height:  50px;
+    background-image: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: all .3s;
+    margin: 10px 0;
+    padding: 0px 10px;
+}
+
+.btn:hover {
+    opacity: 0.82;
+}
+
+.links {
+    margin-bottom: 13px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* Password info */
+.password-info {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #888;
+}
+
+.password-info:hover {
+    color: #333;
+}
