@@ -42,28 +42,41 @@
         $cpassword = $_POST['Cpassword'];
         $date = date('Y-m-d H:i:s');
 
-        // Validate email format
-        if (!validateEmail($email)) {
-            echo "<script>alert('Please enter a valid email address.');</script>";
-        } else if ($password !== $cpassword) {
-            echo "<script>alert('Passwords do not match!');</script>";
-        } else if (!validatePassword($password)) {
-            echo "<script>alert('Password must contain at least one number and one symbol.');</script>";
+        // Check if the username already exists
+        $query = "SELECT * FROM user WHERE username='$username'";
+        $result = mysqli_query($connection, $query);
+        if (mysqli_num_rows($result) > 0) {
+            echo "<script>alert('Username already exists!');</script>";
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            $query = "INSERT INTO user (username, email, password, create_at) VALUES ('$username', '$email', '$hashedPassword', '$date')";
-            if (mysqli_query($connection, $query)) {
-                echo "<script>alert('Signup successful!');</script>";
+            // Check if the email already exists
+            $query = "SELECT * FROM user WHERE email='$email'";
+            $result = mysqli_query($connection, $query);
+            if (mysqli_num_rows($result) > 0) {
+                echo "<script>alert('Email already exists!');</script>";
             } else {
-                echo "<script>alert('Error: " . mysqli_error($connection) . "');</script>";
+                // Validate email format
+                if (!validateEmail($email)) {
+                    echo "<script>alert('Please enter a valid email address.');</script>";
+                } else if ($password !== $cpassword) {
+                    echo "<script>alert('Passwords do not match!');</script>";
+                } else if (!validatePassword($password)) {
+                    echo "<script>alert('Password must contain at least one number and one symbol.');</script>";
+                } else {
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    $query = "INSERT INTO user (username, email, password, created_at) VALUES ('$username', '$email', '$hashedPassword', '$date')";
+                    if (mysqli_query($connection, $query)) {
+                        echo "<script>alert('Signup successful!');</script>";
+                    } else {
+                        echo "<script>alert('Error: " . mysqli_error($connection) . "');</script>";
+                    }
+                }
             }
         }
     }
 
     // Close database connection
     mysqli_close($connection);
-    ?>
+?>
 
 
 <!DOCTYPE html>
