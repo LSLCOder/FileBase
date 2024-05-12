@@ -128,11 +128,11 @@
         <form action="index.php" method="POST">
             <div class="field input">
                 <label for="username">Username</label>
-                <input type="text" name="username" id="username" autocomplete="off" required>
+                <input type="text" name="username" id="username" required>
             </div>
             <div class="field input">
                 <label for="email">Email</label>
-                <input type="text" name="email" id="email" autocomplete="off" required>
+                <input type="text" name="email" id="email" required>
             </div>
             <div class="field input">
                 <label for="password">Password</label>
@@ -153,7 +153,7 @@
         <form action="index.php" method="POST">
             <div class="field input">
                 <label for="username">Username</label>
-                <input type="text" name="username" id="username" required>
+                <input type="text" name="username" id="username" autocomplete="off" required>
             </div>
             <div class="field input">
                 <label for="email">Email</label>
