@@ -11,7 +11,6 @@
 
     // Function to validate password format
     function validatePassword($password) {
-        // Password should contain at least one number and one symbol
         return preg_match('/[0-9]/', $password) && preg_match('/[^a-zA-Z0-9]/', $password);
     }
 
@@ -25,12 +24,20 @@
 
         if ($row = mysqli_fetch_assoc($result)) {
             if (password_verify($password, $row['password'])) {
+
+                $_SESSION['name'] = $row['username'];
+                $_SESSION['email'] = $row['email'];
+                $_SESSION['created_at'] = $row['created_at'];
+
                 echo "<script>alert('Login successful!');</script>";
+                echo "<script>window.location.href = 'dashboard.php';</script>";
+                exit();
             } else {
-                echo "<script>alert('Invalid username or password!');</script>";
+                // Check if the username exists but the password is incorrect
+                echo "<script>alert('Incorrect password for the username: $username');</script>";
             }
         } else {
-            echo "<script>alert('Invalid username or password!');</script>";
+            echo "<script>alert('Unable to login. Verify your username and password and try again.');</script>";
         }
     }
 
@@ -40,7 +47,7 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
         $cpassword = $_POST['Cpassword'];
-        $date = date('Y-m-d H:i:s');
+        $date = date('Y-m-d');
 
         // Check if the username already exists
         $query = "SELECT * FROM user WHERE username='$username'";
@@ -73,9 +80,6 @@
             }
         }
     }
-
-    // Close database connection
-    mysqli_close($connection);
 ?>
 
 
@@ -194,7 +198,7 @@
     <!-- JS LINKS -->   
     <!-- BOOTSTRAP (JS) LINKS --> 
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
-    <script src="js/modal.js"></script>
+    <script src="js/auth_modal.js"></script>
 </body>
 </html>
 

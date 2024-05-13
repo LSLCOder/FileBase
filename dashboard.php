@@ -1,3 +1,7 @@
+<?php
+    session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,17 +13,17 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- My CSS -->
 	<link rel="stylesheet" href="css/dashboard.css">
-
+	<link rel="stylesheet" href="css/dashboard_user_info_modal.css">
 	<title>Filebase</title>
 </head>
 <body>
 
 
 	<!-- SIDEBAR -->
-	<section id="sidebar">
+	<section id="sidebar" class="sidebar">
 		<a href="#" class="brand">
             <i class="fa-regular fa-file"></i>
-			<span class="text">FileBase</span>
+			<span class="text">File<span class="gradient-text">Base</span></span>
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
@@ -35,38 +39,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-doughnut-chart' ></i>
-					<span class="text">Analytics</span>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<i class='bx bxs-message-dots' ></i>
-					<span class="text">Message</span>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<i class='bx bxs-group' ></i>
-					<span class="text">Team</span>
-				</a>
-			</li>
-		</ul>
-		<ul class="side-menu">
-			<li>
-				<a href="#">
-					<i class='bx bxs-cog' ></i>
-					<span class="text">Settings</span>
-				</a>
-			</li>
-			<li>
-				<a href="#" class="logout">
-					<i class='bx bxs-log-out-circle' ></i>
-					<span class="text">Logout</span>
-				</a>
-			</li>
-		</ul>
+
 	</section>
 	<!-- SIDEBAR -->
 
@@ -77,22 +50,35 @@
 		<!-- NAVBAR -->
 		<nav>
 			<i class='bx bx-menu' ></i>
-			<a href="#" class="nav-link">Categories</a>
+
 			<form action="#">
 				<div class="form-input">
 					<input type="search" placeholder="Search...">
 					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
 				</div>
 			</form>
-			<input type="checkbox" id="switch-mode" hidden>
-			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
 			<a href="#" class="profile">
-				<img src="img/people.png">
+				<i class='bx bxs-user-circle'></i>
+
+				<!-- Modal HTML -->
+				<div id="myModal" class="modal">
+				<!-- Modal content -->
+					<div class="modal-content">
+						<div class="modal-header">
+						<h2>User Information</h2>
+						</div>
+						<div class="modal-body">
+							<p><?php echo $_SESSION['name']; ?></p>
+							<p><?php echo $_SESSION['email']; ?></p>
+							<p class="modal-footer">Member since: <?php echo $_SESSION['created_at']; ?></p>
+						</div>
+						<div class="modal-footer">
+							<button id="logoutBtn">Logout</button>
+						</div>
+					</div>
+				</div>
 			</a>
+
 		</nav>
 		<!-- NAVBAR -->
 
@@ -123,20 +109,6 @@
 					<span class="text">
 						<h3>1020</h3>
 						<p>New Order</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-group' ></i>
-					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-dollar-circle' ></i>
-					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
 					</span>
 				</li>
 			</ul>
@@ -201,40 +173,12 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-					</ul>
-				</div>
 			</div>
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	<script src="js/script_dashboard.js"></script>
+	<script src="js/dashboard.js"></script>
+	<script src="js/user_info_modal.js"></script>
 </body>
 </html>
