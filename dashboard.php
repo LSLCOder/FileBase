@@ -6,7 +6,7 @@ session_start();
 <html lang="en">
 <head>
 
-<script type="text/javascript">
+    <script type="text/javascript">
         function preventBack(){window.history.forward()};
         setTimeout("preventBack()",0);
         window.onunload=function(){null;}
@@ -35,20 +35,18 @@ session_start();
             <li class="active">
                 <a href="#">
                     <i class='bx bxs-dashboard'></i>
-                    <span class="text">Dashboard</span>
+                    <span class="text">My Files</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <i class='bx bxs-shopping-bag-alt'></i>
-                    <span class="text">My Store</span>
+                    <i class='bx bx-history'></i>
+                    <span class="text">History</span>
                 </a>
             </li>
         </ul>
     </section>
-    <!-- SIDEBAR -->
 
-    <!-- CONTENT -->
     <section id="content">
         <!-- NAVBAR -->
         <nav>
@@ -62,9 +60,8 @@ session_start();
             <a class="profile">
                 <i class='bx bxs-user-circle'></i>
 
-                <!-- Modal HTML -->
+                <!-- Modal user info -->
                 <div id="myModal" class="modal">
-                    <!-- Modal content -->
                     <div class="modal-content">
                         <div class="modal-header">
                             <h2>User Information</h2>
@@ -81,95 +78,51 @@ session_start();
                 </div>
             </a>
         </nav>
-        <!-- NAVBAR -->
 
         <!-- MAIN -->
         <main>
             <div class="head-title">
                 <div class="left">
-                    <h1>Dashboard</h1>
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="#">Dashboard</a>
-                        </li>
-                        <li><i class='bx bx-chevron-right'></i></li>
-                        <li>
-                            <a class="active" href="#">Home</a>
-                        </li>
-                    </ul>
+                    <h1>My Files</h1>
                 </div>
-                <a href="#" class="btn-download">
+
+                <!-- Button Uploader -->
+                <input type="file" id="file-upload" style="display: none;" onchange="handleFileUpload(event)">
+                <label for="file-upload" class="btn-download">
                     <i class='bx bxs-cloud-download'></i>
-                    <span class="text">Download PDF</span>
-                </a>
+                    <span class="text">File Upload</span>
+                </label>
             </div>
 
+            <!-- Checked MB size -->
             <ul class="box-info">
                 <li>
-                    <i class='bx bxs-calendar-check'></i>
+                    <i class='bx bxs-package'></i>
                     <span class="text">
-                        <h3>1020</h3>
-                        <p>New Order</p>
+                        <progress value="0" max="10"></progress>
+                        <p>0mb/10mb</p>
                     </span>
                 </li>
             </ul>
 
+            <!-- Table -->
             <div class="table-data">
                 <div class="order">
                     <div class="head">
-                        <h3>Recent Orders</h3>
-                        <i class='bx bx-search'></i>
-                        <i class='bx bx-filter'></i>
+                        <h3>Files</h3>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Date Order</th>
-                                <th>Status</th>
+                                <th>Name</th>
+                                <th>Size</th>
+                                <th>Type</th>
+                                <th>Upload Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status process">Process</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
+                        <tbody id="file-table-body">
+
                         </tbody>
                     </table>
                 </div>
@@ -177,31 +130,68 @@ session_start();
         </main>
         <!-- MAIN -->
     </section>
-    <!-- CONTENT -->
+
+    <!-- JS LINKS -->   
     <script src="js/dashboard.js"></script>
     <script src="js/user_info_modal.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- For website nav(logout) --> 
     <script>
         document.getElementById('logoutbtn').addEventListener('click', function() {
-                $.ajax({
-                    type: "POST",
-                    url: "php/logout.php",
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            alert('Logout successful');
-                            window.location.href = 'index.php';
-                        } else {
-                            alert('Logout failed');
-                        }
-                    },
-                    error: function() {
-                        alert('Error in logout process');
+            $.ajax({
+                type: "POST",
+                url: "php/logout.php",
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        alert('Logout successful');
+                        window.location.href = 'index.php';
+                    } else {
+                        alert('Logout failed');
                     }
-                });
-            
+                },
+                error: function() {
+                    alert('Error in logout process');
+                }
+            });
         });
-		
+
+
+        //  Input exxample 
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const validTypes = ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf", "image/png", "image/jpeg", "audio/mpeg", "video/mp4"];
+                if (!validTypes.includes(file.type)) {
+                    alert('Invalid file type. Please upload a doc, docx, pdf, png, jpg, jpeg, mp3, or mp4 file.');
+                    return;
+                }
+
+                const fileName = file.name;
+                const fileSize = (file.size / 1024).toFixed(2) + ' KB';
+                const fileType = file.type;
+                const uploadDate = new Date().toLocaleDateString();
+
+                const tableBody = document.getElementById('file-table-body');
+                const newRow = document.createElement('tr');
+
+                newRow.innerHTML = `
+                    <td>${fileName}</td>
+                    <td>${fileSize}</td>
+                    <td>${fileType}</td>
+                    <td>${uploadDate}</td>
+                    <td class="action-buttons">
+                            <div class="btn view"><i class="fa fa-eye"></i></div>
+                            <div class="btn download"><i class="fa fa-download"></i></div>
+                            <div class="btn edit"><i class="fa fa-edit"></i></div>
+                            <div class="btn delete"><i class="fa fa-trash"></i></div>
+                    </td>
+                `;
+
+                tableBody.appendChild(newRow);
+            }
+        }
     </script>
 </body>
 </html>
