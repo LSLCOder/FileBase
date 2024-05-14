@@ -199,6 +199,25 @@
     <!-- BOOTSTRAP (JS) LINKS --> 
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
     <script src="js/auth_modal.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        window.onload = function() {
+            $.ajax({
+                type: "POST",
+                url: "php/checklogin.php",
+                dataType: "json",
+                success: function(response) {
+                    if (response.loggedIn) {
+                        console.log('User is logged in');
+                        window.location.href = "index.php";
+                    }
+                },
+                error: function() {
+                    console.error('An error occurred while checking login status.');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
