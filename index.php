@@ -6,7 +6,6 @@
         header('Location: dashboard.php');
         exit();
     }
-
     require('./database.php');
 
     // Function to validate email format
@@ -31,8 +30,6 @@
         if ($row = mysqli_fetch_assoc($result)) {
             if (password_verify($password, $row['password'])) {
 
-                $_SESSION['user_id'] = $row['user_id'];
-                
                 $_SESSION['name'] = $row['username'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['created_at'] = $row['created_at'];
@@ -89,6 +86,7 @@
         }
     }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -207,7 +205,7 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
     <script src="js/auth_modal.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
+
     <!-- For website-->  
     <script>
         window.onload = function() {
@@ -219,7 +217,6 @@
                     if (response.loggedIn === true) {
                         window.location.href = "dashboard.php";
                     }
-                    // No need to handle the else case here since the user is already on index.php
                 },
                 error: function() {
                     console.error('An error occurred while checking login status.');
@@ -227,9 +224,6 @@
             });
         }
     </script>
-
 </body>
 </html>
-
-
 

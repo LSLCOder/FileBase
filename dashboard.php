@@ -59,7 +59,6 @@ session_start();
             </form>
             <a class="profile">
                 <i class='bx bxs-user-circle'></i>
-
                 <!-- Modal user info -->
                 <div id="myModal" class="modal">
                     <div class="modal-content">
@@ -76,7 +75,7 @@ session_start();
                         </div>
                     </div>
                 </div>
-            </a>
+        </a>
         </nav>
 
         <!-- MAIN -->
@@ -89,7 +88,7 @@ session_start();
                 <!-- Button Uploader -->
                 <input type="file" id="file-upload" style="display: none;" onchange="handleFileUpload(event)">
                 <label for="file-upload" class="btn-download">
-                    <i class='bx bxs-cloud-download'></i>
+                    <i class='bx bx-plus'></i>
                     <span class="text">File Upload</span>
                 </label>
             </div>
