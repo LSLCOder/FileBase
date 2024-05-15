@@ -75,6 +75,10 @@ session_start();
                         </div>
                     </div>
                 </div>
+                
+                <i class='bx bxs-cog'></i>
+                <!-- Modal Change user -->
+                
         </a>
         </nav>
 
