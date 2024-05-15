@@ -1,5 +1,52 @@
 <?php
 session_start();
+
+// For Update Username and Password
+include 'database.php';
+
+function validatePassword($password) {
+    return preg_match('/[0-9]/', $password) && preg_match('/[^a-zA-Z0-9]/', $password);
+}
+if (isset($_POST['submit'])) {
+    $username = $_POST['username'];
+    $oldPassword = $_POST['oldPassword'];
+    $newPassword = $_POST['newPassword'];
+
+    // Retrieve existing password from the database for the logged-in user
+    $existingUsername = $_SESSION['name'];
+    $query = "SELECT * FROM user WHERE username='$existingUsername'";
+    $result = mysqli_query($connection, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Verify if the old password matches the stored hash
+        if (password_verify($oldPassword, $row['password'])) {
+            // Password matches, proceed with updating username and password
+            // Update username
+            $updateUsernameQuery = "UPDATE user SET username='$username' WHERE username='$existingUsername'";
+            mysqli_query($connection, $updateUsernameQuery);
+
+            $_SESSION['name'] = $username;
+
+            // Check if new password is provided and update password
+            if (!empty($newPassword)) {
+                // Validate new password format
+                if (!validatePassword($newPassword)) {
+                    echo "<script>alert('Password must contain at least one number and one symbol.');</script>";
+                } else {
+                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $updatePasswordQuery = "UPDATE user SET password='$hashedPassword' WHERE username='$username'";
+                    mysqli_query($connection, $updatePasswordQuery);
+                    echo "<script>alert('Username and password updated successfully!');</script>";
+                }
+            } else {
+                echo "<script>alert('Username updated successfully!');</script>";
+            }
+        } else {
+            echo "<script>alert('Old password is incorrect!');</script>";
+        }
+    } else {
+        echo "<script>alert('User not found!');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -75,12 +122,24 @@ session_start();
                         </div>
                     </div>
                 </div>
-                
-                <i class='bx bxs-cog'></i>
-                <!-- Modal Change user -->
-                
         </a>
+        <i class='bx bxs-cog' id="openSettings"></i>
         </nav>
+    <!-- Modal Change user -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+                <h2>Change User</h2>
+                <form action="dashboard.php" method="POST">
+                    <label for="username">Change Username</label>
+                    <input type="text" id="username" name="username" value="<?php echo $_SESSION['name']; ?>">
+                    <label for="oldPassword">Old Password</label>
+                    <input type="password" id="oldPassword" name="oldPassword" required>
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                    <button type="submit" name="submit">Save</button>
+                </form>
+        </div>
+    </div>
 
         <!-- MAIN -->
         <main>
@@ -136,65 +195,32 @@ session_start();
 
     <!-- JS LINKS -->   
     <script src="js/dashboard.js"></script>
-    <script src="js/user_info_modal.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="js/user_modal.js"></script>
+    <script src="js/upload_handle.js"></script>
+    <script src="js/change_user_info.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- For website nav(logout) --> 
     <script>
-        document.getElementById('logoutbtn').addEventListener('click', function() {
-            $.ajax({
-                type: "POST",
-                url: "php/logout.php",
-                dataType: "json",
-                success: function(response) {
-                    if (response.success) {
-                        alert('Logout successful');
-                        window.location.href = 'index.php';
-                    } else {
-                        alert('Logout failed');
-                    }
-                },
-                error: function() {
-                    alert('Error in logout process');
-                }
-            });
-        });
-
-
-        //  Input exxample 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const validTypes = ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf", "image/png", "image/jpeg", "audio/mpeg", "video/mp4"];
-                if (!validTypes.includes(file.type)) {
-                    alert('Invalid file type. Please upload a doc, docx, pdf, png, jpg, jpeg, mp3, or mp4 file.');
-                    return;
-                }
-
-                const fileName = file.name;
-                const fileSize = (file.size / 1024).toFixed(2) + ' KB';
-                const fileType = file.type;
-                const uploadDate = new Date().toLocaleDateString();
-
-                const tableBody = document.getElementById('file-table-body');
-                const newRow = document.createElement('tr');
-
-                newRow.innerHTML = `
-                    <td>${fileName}</td>
-                    <td>${fileSize}</td>
-                    <td>${fileType}</td>
-                    <td>${uploadDate}</td>
-                    <td class="action-buttons">
-                            <div class="btn view"><i class="fa fa-eye"></i></div>
-                            <div class="btn download"><i class="fa fa-download"></i></div>
-                            <div class="btn edit"><i class="fa fa-edit"></i></div>
-                            <div class="btn delete"><i class="fa fa-trash"></i></div>
-                    </td>
-                `;
-
-                tableBody.appendChild(newRow);
+    document.getElementById('logoutbtn').addEventListener('click', function() {
+    $.ajax({
+        type: "POST",
+        url: "php/logout.php",
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                alert('Logout successful');
+                window.location.href = 'index.php';
+            } else {
+                alert('Logout failed');
             }
+        },
+        error: function() {
+            alert('Error in logout process');
         }
-    </script>
+    });
+});
+</script>
 </body>
 </html>
