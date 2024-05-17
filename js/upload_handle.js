@@ -1,52 +1,78 @@
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const validTypes = ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf", "image/png", "image/jpeg", "audio/mpeg", "video/mp4"];
-        if (!validTypes.includes(file.type)) {
-            alert('Invalid file type. Please upload a doc, docx, pdf, png, jpg, jpeg, mp3, or mp4 file.');
-            return;
-        }
+document.getElementById('file-upload').addEventListener('change', function() {
+    var form = document.getElementById('file-upload-form');
+    var formData = new FormData(form);
 
-        const fileName = file.name;
-        const fileSize = (file.size / 1024).toFixed(2) + ' KB';
-        const fileType = file.type;
-        const uploadDate = new Date().toLocaleDateString();
-
-        const formData = new FormData();
-        formData.append('fileName', fileName);
-        formData.append('fileSize', file.size);
-        formData.append('fileType', fileType);
-        formData.append('uploadDate', uploadDate);
-        formData.append('file', file);
-
-        $.ajax({
-            url: 'php/upload.php',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                const tableBody = document.getElementById('file-table-body');
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${fileName}</td>
-                    <td>${fileSize}</td>
-                    <td>${fileType}</td>
-                    <td>${uploadDate}</td>
-                    <td class="action-buttons">
-                        <div class="btn view"><i class="fa fa-eye"></i></div>
-                        <div class="btn download"><i class="fa fa-download"></i></div>
-                        <div class="btn edit"><i class="fa fa-edit"></i></div>
-                        <div class="btn delete"><i class="fa fa-trash"></i></div>
-                    </td>
-                `;
-                tableBody.appendChild(newRow);
-                alert('File uploaded successfully!');
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-                alert('Error uploading file.');
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    alert(response.message); // Display success message
+                    // Refresh the table and update the progress bar
+                    refreshTable();
+                    updateProgressBar();
+                } else {
+                    alert(response.message);
+                }
+            } else {
+                alert('Upload failed: ' + xhr.status);
             }
-        });
-    }
+        }
+    };
+
+    xhr.open('POST', 'php/upload.php', true);
+    xhr.send(formData);
+});
+
+// Function to refresh the table by fetching updated file data
+function refreshTable() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Replace the content of the table body with the updated HTML
+                document.getElementById('file-table-body').innerHTML = xhr.responseText;
+            } else {
+                console.error('Failed to fetch updated file data');
+            }
+        }
+    };
+    xhr.open('GET', 'php/fetch_files.php', true);
+    xhr.send();
 }
+
+// Function to update the progress bar
+function updateProgressBar() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    var totalSizeKB = response.totalSizeKB;
+                    var totalSizeMB = totalSizeKB / 1024;
+                    var progressBar = document.querySelector('.box-info progress');
+                    var progressText = document.querySelector('.box-info p');
+
+                    progressBar.value = totalSizeMB;
+                    progressText.textContent = `${totalSizeMB.toFixed(2)}MB/10MB`;
+
+                    if (totalSizeMB > 10) {
+                        alert('Total file size exceeds 10MB limit.');
+                    }
+                } else {
+                    console.error(response.message);
+                }
+            } else {
+                console.error('Failed to fetch total size');
+            }
+        }
+    };
+    xhr.open('GET', 'php/fetch_total_size.php', true);
+    xhr.send();
+}
+
+// Initial load to update the progress bar
+updateProgressBar();
+

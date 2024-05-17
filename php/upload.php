@@ -1,10 +1,33 @@
 <?php
 session_start();
-include 'database.php';
+include '../database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['name'])) {
         echo json_encode(['success' => false, 'message' => 'User not logged in']);
+        exit();
+    }
+
+    $maxFileSize = 1 * 1024 * 1024; // 1MB limit
+    $maxTotalSizeKB = 10 * 1024; // 10MB limit in KB
+    $validTypes = [
+        "application/msword" => "doc",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "docx",
+        "application/pdf" => "pdf",
+        "image/png" => "png",
+        "image/jpeg" => "jpg",
+        "audio/mpeg" => "mp3",
+        "video/mp4" => "mp4"
+    ];
+
+    if ($_FILES['file']['size'] > $maxFileSize) {
+        echo json_encode(['success' => false, 'message' => 'File size must be less than 1MB']);
+        exit();
+    }
+
+    $fileType = $_FILES['file']['type'];
+    if (!array_key_exists($fileType, $validTypes)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid file type.']);
         exit();
     }
 
@@ -16,17 +39,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = mysqli_fetch_assoc($result);
         $uploaderUserId = $user['user_id'];
 
-        $fileName = $_POST['fileName'];
-        $fileSize = $_POST['fileSize'];
-        $fileType = $_POST['fileType'];
-        $uploadDate = $_POST['uploadDate'];
+        // Check total file size before uploading the new file
+        $query = "SELECT SUM(fileSize_KB) AS totalSize FROM file WHERE uploader_user_id='$uploaderUserId'";
+        $result = mysqli_query($connection, $query);
+        $row = mysqli_fetch_assoc($result);
+        $totalSizeKB = $row['totalSize'] ?? 0;
+        $newFileSizeKB = $_FILES['file']['size'] / 1024; // Convert to KB
+        $totalSizeKB += $newFileSizeKB;
+
+        if ($totalSizeKB > $maxTotalSizeKB) { // 100MB limit in KB
+            echo json_encode(['success' => false, 'message' => 'Total file size exceeds 100MB limit.']);
+            exit();
+        }
+
+        $fileName = $_FILES['file']['name'];
+        $originalFileName = $fileName;
+        $fileSizeKB = round($newFileSizeKB); // Round the size in KB
+        $uploadDate = date('Y-m-d H:i:s');
+        $fileExtension = $validTypes[$fileType];
         $fileData = file_get_contents($_FILES['file']['tmp_name']);
 
-        $stmt = $connection->prepare("INSERT INTO file (uploader_user_id, fileName, fileSize, fileType, uploadDate, byte) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isissb", $uploaderUserId, $fileName, $fileSize, $fileType, $uploadDate, $fileData);
+        // Check if the filename exists in the database
+        $count = 0;
+        while (fileExistsInDatabase($fileName, $connection)) {
+            $count++;
+            $fileName = addSuffixToFilename($originalFileName, $count);
+        }
+
+        $stmt = $connection->prepare("INSERT INTO file (uploader_user_id, fileName, fileSize_KB, fileType, uploadDate, byte) VALUES (?, ?, ?, ?, ?, ?)");
+        $null = NULL; // for blob
+        $stmt->bind_param("isissb", $uploaderUserId, $fileName, $fileSizeKB, $fileExtension, $uploadDate, $null);
+        $stmt->send_long_data(5, $fileData); // send the file data
 
         if ($stmt->execute()) {
-            echo json_encode(['success' => true]);
+            echo json_encode(['success' => true, 'message' => 'File uploaded successfully!']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Database insertion failed']);
         }
@@ -38,6 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
+
+// Function to check if filename exists in the database
+function fileExistsInDatabase($fileName, $connection) {
+    $query = "SELECT COUNT(*) as count FROM file WHERE fileName='$fileName'";
+    $result = mysqli_query($connection, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['count'] > 0;
+}
+
+// Function to add suffix to filename
+function addSuffixToFilename($fileName, $count) {
+    $path_parts = pathinfo($fileName);
+    return $path_parts['filename'] . "($count)." . $path_parts['extension'];
+}
 ?>
-
-

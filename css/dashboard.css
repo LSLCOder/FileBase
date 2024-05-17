@@ -265,6 +265,7 @@ body {
     font-size:30px;
 }
 
+
 /* Modal */
 .modal {
 	display: none;
@@ -530,17 +531,25 @@ body {
     background-color: #3498db;
 }
 
+
+
 #content main .table-data .order table td.action-buttons .btn.download {
     background-color: #2ecc71;
 }
+
+
 
 #content main .table-data .order table td.action-buttons .btn.edit {
     background-color: #f39c12;
 }
 
+
+
 #content main .table-data .order table td.action-buttons .btn.delete {
     background-color: #e74c3c;
 }
+
+
 
 #content main .table-data .order table tr:hover {
     background: var(--grey);
