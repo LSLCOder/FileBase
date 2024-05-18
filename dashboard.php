@@ -243,6 +243,7 @@ if (isset($_POST['submit'])) {
     <script src="js/dashboard.js"></script>
     <script src="js/user_modal.js"></script>
     <script src="js/upload_handle.js"></script>
+    <script src="js/file_action.js"></script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -271,20 +272,42 @@ if (isset($_POST['submit'])) {
 
 <!-- action button on each row functionalities -->
 <script>
+    // PREVIEW
     function previewFile(id) {
         alert('Preview file ID: ' + id);
     }
-
+    // EDIT
     function editFile(id) {
         alert('Edit file ID: ' + id);
     }
-
+    // DELETE
     function deleteFile(id) {
-        alert('Delete file ID: ' + id);
+        if (confirm('Are you sure you want to delete this file?')) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            alert(response.message);
+                            refreshTable();
+                            updateProgressBar();
+                        } else {
+                            alert(response.message);
+                        }
+                    } else {
+                        alert('Failed to delete file: ' + xhr.status);
+                    }
+                }
+            };
+            xhr.open('POST', 'php/delete_file.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('file_id=' + id);
+        }
     }
-
+    // DOWNLOAD
     function downloadFile(id) {
-        alert('Download file ID: ' + id);
+        window.location.href = 'php/download_file.php?file_id=' + id;
     }
     </script>
 
