@@ -104,7 +104,6 @@ document.getElementById('edit-file-form').addEventListener('submit', function(ev
                 if (response.success) {
                     alert('File name updated successfully');
                     closeEditFileModal();
-                    // Refresh the file table to reflect the changes
                     refreshTable();
                 } else {
                     alert(response.message);
@@ -117,6 +116,7 @@ document.getElementById('edit-file-form').addEventListener('submit', function(ev
     xhr.open('POST', 'php/edit_file.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('file_id=' + encodeURIComponent(fileId) + '&new_file_name=' + encodeURIComponent(newFileName));
+    xhr.setRequestHeader(window.location.reload());
 });
 
 
@@ -149,6 +149,7 @@ function deleteFile(id) {
         xhr.open('POST', 'php/delete_file.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('file_id=' + id);
+        xhr.setRequestHeader(window.location.reload());
     }
 }
 

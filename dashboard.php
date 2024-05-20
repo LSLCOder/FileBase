@@ -102,10 +102,10 @@ if (isset($_POST['submit'])) {
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <form action="#">
+            <form id="search-form" class="unique-search-form" action="#">
                 <div class="form-input">
-                    <input type="search" placeholder="Search...">
-                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    <input type="search" id="search-input" placeholder="Search...">
+                    <button id="search-submit" type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
             <a class="profile">
@@ -239,7 +239,7 @@ if (isset($_POST['submit'])) {
                                 </tr>
                             </thead>
                             <tbody id="history-table-body">
-                                <?php
+                            <?php
                                 $history_query = "SELECT fh.*, f.fileName FROM file_history fh JOIN file f ON fh.file_id = f.file_id WHERE fh.user_id = '$user_id' ORDER BY fh.time_action DESC";
                                 $history_result = mysqli_query($connection, $history_query);
                                 while ($history_row = mysqli_fetch_assoc($history_result)) {

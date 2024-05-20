@@ -32,22 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Update the file name in the database
         $query = "UPDATE file SET fileName = '$newFileNameWithExtension' WHERE file_id = $file_Id";
         if (mysqli_query($connection, $query)) {
-            // Get the user's ID from the session
-            session_start();
-            $uploaderUsername = $_SESSION['name'];
-            $userQuery = "SELECT user_id FROM user WHERE username='$uploaderUsername'";
-            $userResult = mysqli_query($connection, $userQuery);
-
-            if ($userResult && mysqli_num_rows($userResult) === 1) {
-                $user = mysqli_fetch_assoc($userResult);
-                $uploaderUserId = $user['user_id'];
-
-                // Log the rename action in file_history
-                $action = "rename (to $newFileNameWithExtension)";
-                $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', '$file_Id', '$action', NOW())";
-                mysqli_query($connection, $historyQuery);
-            }
-
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to update file name']);
@@ -57,3 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 ?>
+
+
+

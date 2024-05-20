@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = mysqli_query($connection, $query);
         $row = mysqli_fetch_assoc($result);
         $totalSizeKB = $row['totalSize'] ?? 0;
-        $newFileSizeKB = $_FILES['file']['size'] / 1024; 
+        $newFileSizeKB = $_FILES['file']['size'] / 1024; // Convert to KB
         $totalSizeKB += $newFileSizeKB;
 
-        if ($totalSizeKB > $maxTotalSizeKB) { 
+        if ($totalSizeKB > $maxTotalSizeKB) { // 100MB limit in KB
             echo json_encode(['success' => false, 'message' => 'Total file size exceeds 100MB limit.']);
             exit();
         }
@@ -72,13 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->send_long_data(5, $fileData); // send the file data
 
         if ($stmt->execute()) {
-
             echo json_encode(['success' => true, 'message' => 'File uploaded successfully!']);
-
-            // Log the upload action in file_history
-            $action = "upload ($fileName)";
-            $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', LAST_INSERT_ID(), '$action', NOW())";
-            mysqli_query($connection, $historyQuery);
             
         } else {
             echo json_encode(['success' => false, 'message' => 'Database insertion failed']);

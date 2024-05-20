@@ -2,9 +2,9 @@
 document.getElementById('file-upload').addEventListener('change', function() {
     var form = document.getElementById('file-upload-form');
     var formData = new FormData(form);
-    var xhr = new XMLHttpRequest();
 
-    
+
+    var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
@@ -41,6 +41,7 @@ function refreshTable() {
     xhr.send();
 }
 
+
 function updateProgressBar() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -53,29 +54,21 @@ function updateProgressBar() {
                     var progressBar = document.querySelector('.box-info progress');
                     var progressText = document.querySelector('.box-info p');
 
-                    // Update the progress bar value and text
                     progressBar.value = totalSizeMB;
                     progressText.textContent = `${totalSizeMB.toFixed(2)}MB/10MB`;
-
-                    // Display an alert if the total size exceeds 10MB
                     if (totalSizeMB > 10) {
                         alert('Total file size exceeds 10MB limit.');
                     }
                 } else {
-                    // Log an error message if fetching the total size fails
                     console.error(response.message);
                 }
             } else {
-                // Log an error message if the request fails
                 console.error('Failed to fetch total size');
             }
         }
     };
-    // Open a GET request to the fetch total size PHP script
     xhr.open('GET', 'php/fetch_total_size.php', true);
-    // Send the request
     xhr.send();
 }
 
-// Initial load to update the progress bar
 updateProgressBar();
