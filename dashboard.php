@@ -1,12 +1,12 @@
 <?php
 session_start();
-
-// For Update Username and Password
 include 'database.php';
 
+// for updating username and password
 function validatePassword($password) {
     return preg_match('/[0-9]/', $password) && preg_match('/[^a-zA-Z0-9]/', $password);
 }
+
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $oldPassword = $_POST['oldPassword'];
@@ -19,6 +19,12 @@ if (isset($_POST['submit'])) {
     if ($row = mysqli_fetch_assoc($result)) {
         // Verify if the old password matches the stored hash
         if (password_verify($oldPassword, $row['password'])) {
+            // Check if the new password is the same as the old password
+            if ($newPassword === $oldPassword) {
+                echo "<script>alert('New password cannot be the same as the old password.'); window.location.href = 'dashboard.php';</script>";
+                exit();
+            }
+
             // Update username
             $updateUsernameQuery = "UPDATE user SET username='$username' WHERE username='$existingUsername'";
             mysqli_query($connection, $updateUsernameQuery);
@@ -29,21 +35,21 @@ if (isset($_POST['submit'])) {
             if (!empty($newPassword)) {
                 // Validate new password format
                 if (!validatePassword($newPassword)) {
-                    echo "<script>alert('Password must contain at least one number and one symbol.');</script>";
+                    echo "<script>alert('Password must contain at least one number and one symbol.'); window.location.href = 'dashboard.php';</script>";
                 } else {
                     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                     $updatePasswordQuery = "UPDATE user SET password='$hashedPassword' WHERE username='$username'";
                     mysqli_query($connection, $updatePasswordQuery);
-                    echo "<script>alert('Username and password updated successfully!');</script>";
+                    echo "<script>alert('Username and password updated successfully!'); window.location.href = 'dashboard.php';</script>";
                 }
             } else {
-                echo "<script>alert('Username updated successfully!');</script>";
+                echo "<script>alert('Username updated successfully!'); window.location.href = 'dashboard.php';</script>";
             }
         } else {
-            echo "<script>alert('Old password is incorrect!');</script>";
+            echo "<script>alert('Old password is incorrect!'); window.location.href = 'dashboard.php';</script>";
         }
     } else {
-        echo "<script>alert('User not found!');</script>";
+        echo "<script>alert('User not found!'); window.location.href = 'dashboard.php';</script>";
     }
 }
 ?>
@@ -51,17 +57,21 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <script type="text/javascript">
         function preventBack() { window.history.forward(); }
         setTimeout("preventBack()", 0);
         window.onunload = function () { null; }
     </script>
+
     <meta charset="UTF-8">
+
     <!-- CDN LINKS -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <!-- LOCAL LINKS -->
+
+    <!-- LOCAL LINKS -->
     <link rel="stylesheet" href="css/dashboard.css">
     <title>Filebase</title>
 </head>
@@ -117,10 +127,9 @@ if (isset($_POST['submit'])) {
                     </div>
                 </div>
             </a>
+            <!-- Modal Change user info -->
             <i class='bx bxs-cog' id="openSettings"></i>
-        </nav>
-        <!-- Modal Change user -->
-        <div id="settingsModal" class="modal">
+            <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <h2>Change User</h2>
                 <form action="dashboard.php" method="POST">
@@ -134,7 +143,8 @@ if (isset($_POST['submit'])) {
                 </form>
             </div>
         </div>
-
+        </nav>
+    
         <!-- MAIN -->
         <main>
             <div id="my-files">
@@ -149,7 +159,6 @@ if (isset($_POST['submit'])) {
                             <i class='bx bx-plus'></i>
                             <span class="text">File Upload</span>
                         </label>
-                        <!-- <button type="submit">Upload</button> -->
                     </form>
                 </div>
                 <!-- Checked MB size -->
@@ -200,10 +209,9 @@ if (isset($_POST['submit'])) {
                                                     <span class='btn download' onclick='downloadFile({$file_row['file_id']})'><i class='bx bxs-download'></i></span>
                                                 </td>
                                             </tr>";
-                                    }
-                                }
+                                        }
+                                  }
                                 ?>
-                            </tbody>
                             </tbody>
                         </table>
                     </div>
@@ -231,6 +239,17 @@ if (isset($_POST['submit'])) {
                                 </tr>
                             </thead>
                             <tbody id="history-table-body">
+                                <?php
+                                $history_query = "SELECT fh.*, f.fileName FROM file_history fh JOIN file f ON fh.file_id = f.file_id WHERE fh.user_id = '$user_id' ORDER BY fh.time_action DESC";
+                                $history_result = mysqli_query($connection, $history_query);
+                                while ($history_row = mysqli_fetch_assoc($history_result)) {
+                                    echo "<tr>
+                                        <td>{$history_row['fileName']}</td>
+                                        <td>{$history_row['action']}</td>
+                                        <td>{$history_row['time_action']}</td>
+                                    </tr>";
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -238,13 +257,29 @@ if (isset($_POST['submit'])) {
             </div>
         </main>
     </section>
+    <!-- Modal for Editing File -->
+    <div id="editFileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Rename File</h2>
+            </div>
+            <div class="modal-body">
+                <form id="edit-file-form">
+                    <input type="text" id="file-name" name="file_name" required>
+                    <input type="hidden" id="file-id" name="file_id">
+                    <input type="text" class="extension-field" id="file-extension" name="file_extension" readonly>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- JS LINKS -->   
     <script src="js/dashboard.js"></script>
     <script src="js/user_modal.js"></script>
     <script src="js/upload_handle.js"></script>
-    <script src="js/file_action.js"></script>
-
+    <script src="js/file_actions.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -269,48 +304,6 @@ if (isset($_POST['submit'])) {
     });
 });
 </script>
-
-<!-- action button on each row functionalities -->
-<script>
-    // PREVIEW
-    function previewFile(id) {
-        alert('Preview file ID: ' + id);
-    }
-    // EDIT
-    function editFile(id) {
-        alert('Edit file ID: ' + id);
-    }
-    // DELETE
-    function deleteFile(id) {
-        if (confirm('Are you sure you want to delete this file?')) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            alert(response.message);
-                            refreshTable();
-                            updateProgressBar();
-                        } else {
-                            alert(response.message);
-                        }
-                    } else {
-                        alert('Failed to delete file: ' + xhr.status);
-                    }
-                }
-            };
-            xhr.open('POST', 'php/delete_file.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.send('file_id=' + id);
-        }
-    }
-    // DOWNLOAD
-    function downloadFile(id) {
-        window.location.href = 'php/download_file.php?file_id=' + id;
-    }
-    </script>
-
 
 </body>
 </html>

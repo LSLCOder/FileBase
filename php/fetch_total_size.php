@@ -3,17 +3,13 @@
 session_start();
 include '../database.php';
 
-// Check if the user is logged in by verifying the session variable
 if (!isset($_SESSION['name'])) {
-    // If the user is not logged in, send a JSON response indicating failure and exit
     echo json_encode(['success' => false, 'message' => 'User not logged in']);
     exit();
 }
 
-// Get the logged-in user's username from the session
 $uploaderUsername = $_SESSION['name'];
 
-// Query to get the user ID for the logged-in user
 $query = "SELECT user_id FROM user WHERE username='$uploaderUsername'";
 $result = mysqli_query($connection, $query);
 
@@ -32,10 +28,8 @@ if ($result && mysqli_num_rows($result) === 1) {
     // Get the total size in KB, or 0 if no files are found
     $totalSizeKB = $row['totalSize'] ?? 0;
 
-    // Send a JSON response indicating success and include the total size in KB
     echo json_encode(['success' => true, 'totalSizeKB' => $totalSizeKB]);
 } else {
-    // If the user is not found in the database, send a JSON response indicating failure
     echo json_encode(['success' => false, 'message' => 'User not found']);
 }
 ?>

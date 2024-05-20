@@ -290,18 +290,19 @@ body {
 	border-radius: 20px;
   }
 
+  
 .modal p {
     margin-top: 3.5px;
     margin-bottom: 3.5px;
 }
 .modal-header h2 {
-	margin-top: 0;
+	margin-bottom: 10px;
   }
 .modal-footer {
 	padding-top: 20px;
 	border-top: 1px solid #ddd;
   } 
-
+/* Setting User Modal */
   #settingsModal .modal-content {
     display: flex;
     flex-direction: column;
@@ -337,12 +338,77 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
 .modal-content button:hover {
     background-color: #bb58fd;
 }
-
 #settingsModal .modal-content form button:hover {
+    background-color: #bb58fd;
+}
+
+
+/* Edit File Modal */
+#editFileModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-family);
+    width: 300px; /* Adjust the width as needed */
+}
+
+#editFileModal .modal-content form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 16px; /* Add space between items */
+    align-items: center; /* Center items horizontally */
+}
+
+#editFileModal .modal-content form .form-group {
+    display: flex;
+    align-items: center; 
+    flex-grow: 1; 
+    width: 100%; /* Ensure full width */
+}
+
+#editFileModal .modal-content form .form-group label {
+    margin-right: 8px; 
+}
+
+#editFileModal .modal-content form input[type="text"],
+#editFileModal .modal-content form input[type="hidden"] {
+    flex-grow: 1; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    width: 100%; /* Ensure full width */
+}
+
+#editFileModal .modal-content form input.extension-field {
+    color: var(--dark-grey); 
+    border: 1px solid #ccc; 
+    pointer-events: none; 
+}
+
+#editFileModal .modal-content form .button-group {
+    display: flex; /* Display buttons in a row */
+    width: 100%; /* Ensure full width */
+    gap: 8px; /* Space between buttons */
+}
+
+#editFileModal .modal-content form button {
+    flex-grow: 1; /* Allow buttons to grow and take equal space */
+    padding: 10px 20px;
+    background-color: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#editFileModal .modal-content form button:hover {
     background-color: #bb58fd;
 }
 /* NAVBAR */
@@ -387,15 +453,12 @@ body {
     text-decoration: none;
     transition: transform 0.2s, box-shadow 0.2s;
 }
-
 #content main .head-title .btn-download i {
     margin-right: 3px;
 }
-
 #content main .head-title .btn-download .text {
     font-size: 16px;
 }
-
 #content main .head-title .btn-download:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
@@ -458,38 +521,32 @@ body {
     width: 100%;
     color: var(--dark);
 }
-
 #content main .table-data > div {
     border-radius: 20px;
     background: var(--light);
     padding: 24px;
     overflow-x: auto;
 }
-
 #content main .table-data .head {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 24px;
 }
-
 #content main .table-data .head h3 {
     margin-right: auto;
     font-size: 24px;
     font-weight: 600;
 }
-
 #content main .table-data .order {
     flex-grow: 1;
     flex-basis: 500px;
 }
-
 #content main .table-data .order table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
-
 #content main .table-data .order table th, 
 #content main .table-data .order table td {
     padding: 12px;
@@ -498,24 +555,20 @@ body {
     word-wrap: break-word; 
     white-space: normal; /
 }
-
 #content main .table-data .order table th {
     background: var(--grey);
     text-align: left;
     font-weight: bold;
 }
-
 #content main .table-data .order table td {
     padding: 16px 12px;
 }
-
 #content main .table-data .order table td.action-buttons {
     text-align: center;
     display: flex;
     justify-content: space-around; 
     gap: 8px; 
 }
-
 #content main .table-data .order table td.action-buttons .btn {
     display: inline-block;
     padding: 6px 10px;
@@ -526,35 +579,21 @@ body {
     width: 40px; 
     text-align: center; 
 }
-
 #content main .table-data .order table td.action-buttons .btn.view {
     background-color: #3498db;
 }
-
-
-
 #content main .table-data .order table td.action-buttons .btn.download {
     background-color: #2ecc71;
 }
-
-
-
 #content main .table-data .order table td.action-buttons .btn.edit {
     background-color: #f39c12;
 }
-
-
-
 #content main .table-data .order table td.action-buttons .btn.delete {
     background-color: #e74c3c;
 }
-
-
-
 #content main .table-data .order table tr:hover {
     background: var(--grey);
 }
-
 #content main .table-data .order table tr td:first-child {
     display: flex;
     align-items: center;
@@ -568,7 +607,6 @@ body {
 
 
 /* RESPONSIVE WEBSITE */
-
 @media screen and (max-width: 768px) {
 	#sidebar {
 		width: 200px;
@@ -579,7 +617,6 @@ body {
 		left: 200px;
 	}
 }
-
 @media screen and (max-width: 576px) {
 	#content nav form .form-input input {
 		display: none;

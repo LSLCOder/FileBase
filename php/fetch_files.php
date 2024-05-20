@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../database.php';
 
 $query = "SELECT * FROM file";
