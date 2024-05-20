@@ -52,31 +52,43 @@ if (isset($_POST['submit'])) {
         echo "<script>alert('User not found!'); window.location.href = 'dashboard.php';</script>";
     }
 }
+
+// Handle search form submission
+$searchResults = [];
+if (isset($_GET['search'])) {
+    $searchTerm = mysqli_real_escape_string($connection, $_GET['search']);
+    $username = $_SESSION['name'];
+    $query = "SELECT user_id FROM user WHERE username='$username'";
+    $result = mysqli_query($connection, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $user_id = $row['user_id'];
+        $searchQuery = "SELECT * FROM file WHERE uploader_user_id='$user_id' AND fileName LIKE '%$searchTerm%'";
+        $searchResult = mysqli_query($connection, $searchQuery);
+        while ($file_row = mysqli_fetch_assoc($searchResult)) {
+            $searchResults[] = $file_row;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <script type="text/javascript">
         function preventBack() { window.history.forward(); }
         setTimeout("preventBack()", 0);
         window.onunload = function () { null; }
     </script>
-
     <meta charset="UTF-8">
-
     <!-- CDN LINKS -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <!-- LOCAL LINKS -->
     <link rel="stylesheet" href="css/dashboard.css">
     <title>Filebase</title>
 </head>
 <body>
-
     <!-- SIDEBAR -->
     <section id="sidebar" class="sidebar">
         <a href="#" class="brand">
@@ -102,10 +114,10 @@ if (isset($_POST['submit'])) {
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <form id="search-form" class="unique-search-form" action="#">
+            <form id="search-form" class="unique-search-form" action="dashboard.php" method="GET">
                 <div class="form-input">
-                    <input type="search" id="search-input" placeholder="Search...">
-                    <button id="search-submit" type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    <input type="search" id="search-input" name="search" placeholder="Search..." value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
             <a class="profile">
@@ -130,19 +142,19 @@ if (isset($_POST['submit'])) {
             <!-- Modal Change user info -->
             <i class='bx bxs-cog' id="openSettings"></i>
             <div id="settingsModal" class="modal">
-            <div class="modal-content">
-                <h2>Change User</h2>
-                <form action="dashboard.php" method="POST">
-                    <label for="username">Change Username</label>
-                    <input type="text" id="username" name="username" value="<?php echo $_SESSION['name']; ?>">
-                    <label for="oldPassword">Old Password</label>
-                    <input type="password" id="oldPassword" name="oldPassword" required>
-                    <label for="newPassword">New Password</label>
-                    <input type="password" id="newPassword" name="newPassword" required>
-                    <button type="submit" name="submit">Save</button>
-                </form>
+                <div class="modal-content">
+                    <h2>Change User</h2>
+                    <form action="dashboard.php" method="POST">
+                        <label for="username">Change Username</label>
+                        <input type="text" id="username" name="username" value="<?php echo $_SESSION['name']; ?>">
+                        <label for="oldPassword">Old Password</label>
+                        <input type="password" id="oldPassword" name="oldPassword" required>
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <button type="submit" name="submit">Save</button>
+                    </form>
+                </div>
             </div>
-        </div>
         </nav>
     
         <!-- MAIN -->
@@ -189,14 +201,8 @@ if (isset($_POST['submit'])) {
                             </thead>
                             <tbody id="file-table-body">
                                 <?php
-                                $username = $_SESSION['name'];
-                                $query = "SELECT user_id FROM user WHERE username='$username'";
-                                $result = mysqli_query($connection, $query);
-                                if ($row = mysqli_fetch_assoc($result)) {
-                                    $user_id = $row['user_id'];
-                                    $file_query = "SELECT * FROM file WHERE uploader_user_id='$user_id'";
-                                    $file_result = mysqli_query($connection, $file_query);
-                                    while ($file_row = mysqli_fetch_assoc($file_result)) {
+                                if (isset($_GET['search'])) {
+                                    foreach ($searchResults as $file_row) {
                                         echo "<tr>
                                             <td>{$file_row['fileName']}</td>
                                             <td>{$file_row['fileSize_KB']} KB</td>
@@ -209,8 +215,31 @@ if (isset($_POST['submit'])) {
                                                     <span class='btn download' onclick='downloadFile({$file_row['file_id']})'><i class='bx bxs-download'></i></span>
                                                 </td>
                                             </tr>";
+                                    }
+                                } else {
+                                    $username = $_SESSION['name'];
+                                    $query = "SELECT user_id FROM user WHERE username='$username'";
+                                    $result = mysqli_query($connection, $query);
+                                    if ($row = mysqli_fetch_assoc($result)) {
+                                        $user_id = $row['user_id'];
+                                        $file_query = "SELECT * FROM file WHERE uploader_user_id='$user_id'";
+                                        $file_result = mysqli_query($connection, $file_query);
+                                        while ($file_row = mysqli_fetch_assoc($file_result)) {
+                                            echo "<tr>
+                                                <td>{$file_row['fileName']}</td>
+                                                <td>{$file_row['fileSize_KB']} KB</td>
+                                                <td>{$file_row['fileType']}</td>
+                                                <td>{$file_row['uploadDate']}</td>
+                                                <td class='action-buttons'>
+                                                    <span class='btn view' onclick='previewFile({$file_row['file_id']})'><i class='bx bx-file-find'></i></span>
+                                                    <span class='btn edit' onclick='editFile({$file_row['file_id']})'><i class='bx bxs-edit'></i></span>
+                                                    <span class='btn delete' onclick='deleteFile({$file_row['file_id']})'><i class='bx bxs-trash'></i></span>
+                                                    <span class='btn download' onclick='downloadFile({$file_row['file_id']})'><i class='bx bxs-download'></i></span>
+                                                </td>
+                                            </tr>";
                                         }
-                                  }
+                                    }
+                                }
                                 ?>
                             </tbody>
                         </table>
@@ -274,13 +303,11 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 
-
     <!-- JS LINKS -->   
     <script src="js/dashboard.js"></script>
     <script src="js/user_modal.js"></script>
     <script src="js/upload_handle.js"></script>
     <script src="js/file_actions.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- For website nav(logout) --> 
@@ -304,6 +331,5 @@ if (isset($_POST['submit'])) {
     });
 });
 </script>
-
 </body>
 </html>

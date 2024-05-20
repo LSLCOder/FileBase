@@ -33,38 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
         sidebar.classList.toggle('hide');
     });
 
-    const searchForm = document.querySelector('.unique-search-form'); // Use unique class for the search form
-    const searchInput = document.getElementById('search-input');
-    const tableRows = document.querySelectorAll("#file-table-body tr");
-
-    searchForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const searchTerm = searchInput.value.trim().toLowerCase();
-    
-        tableRows.forEach(function (row) {
-            const fileName = row.querySelector("td:first-child").textContent.trim().toLowerCase();
-            if (fileName.startsWith(searchTerm)) {
-                row.style.display = ""; // Show matching rows
-            } else {
-                row.style.display = "none"; // Hide non-matching rows
-            }
-        });
-    });
-
-    searchInput.addEventListener('input', function () {
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        tableRows.forEach(function (row) {
-            const fileName = row.querySelector("td:first-child").textContent.trim().toLowerCase();
-            if (fileName.startsWith(searchTerm)) {
-                row.style.display = ""; // Show matching rows
-            } else {
-                row.style.display = "none"; // Hide non-matching rows
-            }
-        });
-    });
-
-    const searchButton = document.querySelector('.unique-search-form .form-input button');
-    const searchButtonIcon = document.querySelector('.unique-search-form .form-input button .bx');
+    const searchButton = document.querySelector('#content nav form .form-input button');
+    const searchButtonIcon = document.querySelector('#content nav form .form-input button .bx');
+    const searchForm = document.querySelector('#content nav form');
 
     searchButton.addEventListener('click', function (e) {
         if (window.innerWidth < 576) {
@@ -79,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const profile = document.querySelector('#content nav .profile');
+    const imgProfile = document.querySelector('#content nav .profile img');
     const dropdownProfile = document.querySelector('#content nav .profile .profile-link');
 
     profile.addEventListener('click', function () {
@@ -86,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.addEventListener('click', function (e) {
-        if (e.target !== profile) {
+        if (e.target !== imgProfile && e.target !== profile) {
             if (dropdownProfile.classList.contains('show')) {
                 dropdownProfile.classList.remove('show');
             }
