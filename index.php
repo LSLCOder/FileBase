@@ -102,6 +102,7 @@
     <!-- LOCAL LINKS-->
     <link rel="stylesheet" href="css/landingPage.css">
     <link rel="stylesheet" href="css/auth_modal.css">
+    <link rel="icon" href="images/file-regular.png">
 
     <title>FileBase</title>
 </head>
