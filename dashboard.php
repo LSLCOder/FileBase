@@ -179,8 +179,8 @@ if (isset($_GET['search'])) {
                     <li>
                         <i class='bx bxs-package'></i>
                         <span class="text">
-                            <progress value="0" max="10"></progress>
-                            <p>0mb/10mb</p>
+                            <progress value="0" max="25"></progress>
+                            <p>0mb/25mb</p>
                         </span>
                     </li>
                 </ul>
@@ -202,6 +202,7 @@ if (isset($_GET['search'])) {
                             </thead>
                             <tbody id="file-table-body">
                                 <?php
+                                // SEARCH FUNCTION
                                 if (isset($_GET['search'])) {
                                     foreach ($searchResults as $file_row) {
                                         echo "<tr>
@@ -259,6 +260,7 @@ if (isset($_GET['search'])) {
                     <div class="order">
                         <div class="head">
                             <h3>Activity Log</h3>
+                            <button onclick="refreshHistoryTable()" style="margin-left: 10px; padding: 5px 10px; font-size: 16px;">Refresh</button>
                         </div>
                         <table>
                             <thead>
@@ -310,6 +312,7 @@ if (isset($_GET['search'])) {
     <script src="js/upload_handle.js"></script>
     <script src="js/file_actions.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
 
     <!-- For website nav(logout) --> 
     <script>

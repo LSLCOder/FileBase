@@ -55,9 +55,9 @@ function updateProgressBar() {
                     var progressText = document.querySelector('.box-info p');
 
                     progressBar.value = totalSizeMB;
-                    progressText.textContent = `${totalSizeMB.toFixed(2)}MB/10MB`;
-                    if (totalSizeMB > 10) {
-                        alert('Total file size exceeds 10MB limit.');
+                    progressText.textContent = `${totalSizeMB.toFixed(2)}MB/25MB`;
+                    if (totalSizeMB > 25) {
+                        alert('Total file size exceeds 25MB limit.');
                     }
                 } else {
                     console.error(response.message);

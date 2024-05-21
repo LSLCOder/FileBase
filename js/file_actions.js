@@ -4,57 +4,109 @@ function refreshTable() {
 }
 
 
-// PREVIEW
+function refreshHistoryTable() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                document.getElementById('history-table-body').innerHTML = xhr.responseText;
+            } else {
+                alert('Failed to refresh history table: ' + xhr.status);
+            }
+        }
+    };
+    xhr.open('GET', 'php/fetch_history.php', true);
+    xhr.send();
+}
+
+
+
+//PREVIEW
 function previewFile(fileId) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    var fileType = response.fileType;
-                    var fileName = response.fileName;
-                    var fileContent = response.fileContent;
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        var fileContent = response.fileContent;
+                        var fileType = response.fileType;
+                        var fileName = response.fileName;
 
-                    var previewWindow = window.open('', '_blank');
+                        var previewWindow = window.open("", "_blank");
+                        previewWindow.document.title = fileName;
 
-                    if (fileType.includes('image')) {
-                        // If it's an image, display it in an image tag
-                        var previewImg = document.createElement('img');
-                        previewImg.src = 'data:' + fileType + ';base64,' + fileContent;
-                        previewImg.style.maxWidth = '100%';
-                        previewImg.style.maxHeight = '100%';
-                        previewWindow.document.body.appendChild(previewImg);
-                    } else if (fileType === 'video/mp4') {
-                        // If it's an mp4 video, embed it in a video tag
-                        var videoSrc = 'data:' + fileType + ';base64,' + fileContent;
-                        var videoTag = '<video controls style="width:100%;height:auto;"><source src="' + videoSrc + '" type="video/mp4"></video>';
-                        previewWindow.document.body.innerHTML = videoTag;
-                    } else if (fileType === 'audio/mp3') {
-                        // If it's an mp3 audio, embed it in an audio tag
-                        var audioSrc = 'data:' + fileType + ';base64,' + fileContent;
-                        var audioTag = '<audio controls style="width:100%;"><source src="' + audioSrc + '" type="audio/mp3"></audio>';
-                        previewWindow.document.body.innerHTML = audioTag;
-                    } else if (fileType === 'application/pdf') {
-                        // If it's a pdf, embed it in an iframe
-                        var pdfSrc = 'data:' + fileType + ';base64,' + fileContent;
-                        var pdfTag = '<iframe src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;border:none;"></iframe>';
-                        previewWindow.document.body.innerHTML = pdfTag;
-                    } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-                        // If it's a docx, offer it as a download or view
-                        var docxSrc = 'data:' + fileType + ';base64,' + fileContent;
-                        var docxTag = '<iframe src="https://docs.google.com/viewerng/viewer?url=' + encodeURIComponent('data:' + fileType + ';base64,' + fileContent) + '&embedded=true" style="width:100%;height:100%;border:none;"></iframe>';
-                        previewWindow.document.body.innerHTML = docxTag;
+                        // FOR IMAGES
+                        if (fileType === 'png' || fileType === 'jpeg' || fileType === 'jpg') {
+                            var previewImg = document.createElement('img');
+                            previewImg.src = 'data:' + fileType + ';base64,' + fileContent;
+                            previewImg.style.maxWidth = '80%'; 
+                            previewImg.style.maxHeight = '80%'; 
+                            previewImg.style.display = 'block'; 
+                            previewImg.style.margin = 'auto'; 
+                            var blurredBackground = document.createElement('div');
+                            blurredBackground.style.position = 'fixed';
+                            blurredBackground.style.top = '0';
+                            blurredBackground.style.left = '0';
+                            blurredBackground.style.width = '100%';
+                            blurredBackground.style.height = '100%';
+                            blurredBackground.style.backgroundImage = 'url(data:' + fileType + ';base64,' + fileContent + ')';
+                            blurredBackground.style.backgroundSize = 'cover';
+                            blurredBackground.style.filter = 'blur(10px)';
+                            blurredBackground.style.zIndex = '-1';
+                            previewWindow.document.body.appendChild(blurredBackground);
+                            previewWindow.document.body.style.backgroundColor = 'transparent';
+                            previewWindow.document.body.style.display = 'flex';
+                            previewWindow.document.body.style.alignItems = 'center';
+                            previewWindow.document.body.style.justifyContent = 'center';
+                            previewWindow.document.body.appendChild(previewImg);
+                        }
+                        // FOR VIDEO
+                        else if (fileType === 'mp4') {
+                            var videoTag = '<video controls style="width:75%;height:auto;transform: scale(0.75);transform-origin: center;margin: auto;display: block;"><source src="data:' + fileType + ';base64,' + fileContent + '" type="video/mp4"></video>';
+                            previewWindow.document.body.style.backgroundColor = 'black';
+                            previewWindow.document.body.innerHTML = videoTag;
+
+                        } 
+                        // FOR MUSIC
+                        else if (fileType === 'mp3') {
+                            var audioTag = '<audio controls style="width:70%;display:block;margin:auto;"><source src="data:' + fileType + ';base64,' + fileContent + '" type="audio/mpeg"></audio>';
+                            previewWindow.document.body.style.backgroundColor = 'black';
+                            previewWindow.document.body.style.display = 'flex'; // Set display to flex
+                            previewWindow.document.body.style.alignItems = 'center'; // Align items vertically
+                            previewWindow.document.body.style.justifyContent = 'center'; // Justify content horizontally
+                            previewWindow.document.body.innerHTML = audioTag;
+                        
+                        }
+                        // FOR PDF
+                        else if (fileType === 'pdf') {
+                            var pdfSrc = 'data:application/pdf;base64,' + fileContent;
+                            var pdfTag = '<embed src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;" />';
+                            previewWindow.document.body.innerHTML = pdfTag;
+                        }
+                        else if (fileType === 'docx') {
+                            // Assuming fileContent is the base64-encoded content of the PDF version of the DOCX file
+                            var pdfSrc = 'data:application/pdf;base64,' + fileContent;
+                            var embedTag = '<embed src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;"></embed>';
+                            previewWindow.document.body.innerHTML = embedTag;
+                        }
+                        
+                        
+                        //OTHER FILE
+                        else {
+                            var downloadLink = document.createElement('a');
+                            downloadLink.href = 'data:' + fileType + ';base64,' + fileContent;
+                            downloadLink.download = fileName;
+                            downloadLink.textContent = 'Download ' + fileName;
+                            previewWindow.document.body.appendChild(downloadLink);
+                        }
                     } else {
-                        // For other file types, display a download link
-                        var downloadLink = document.createElement('a');
-                        downloadLink.href = 'data:' + fileType + ';base64,' + fileContent;
-                        downloadLink.download = fileName;
-                        downloadLink.textContent = 'Download ' + fileName;
-                        previewWindow.document.body.appendChild(downloadLink);
+                        alert(response.message);
                     }
-                } else {
-                    alert(response.message);
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    console.error('Response text:', xhr.responseText);
                 }
             } else {
                 alert('Failed to fetch file data: ' + xhr.status);
@@ -64,6 +116,9 @@ function previewFile(fileId) {
     xhr.open('GET', 'php/preview_file.php?file_id=' + fileId, true);
     xhr.send();
 }
+
+
+
 
 
 // EDIT (RENAME)
@@ -147,6 +202,7 @@ function deleteFile(id) {
                     if (response.success) {
                         alert(response.message);
                         refreshTable();
+                        refreshHistoryTable();
                         updateProgressBar();
                     } else {
                         alert(response.message);
@@ -167,3 +223,4 @@ function deleteFile(id) {
 function downloadFile(id) {
     window.location.href = 'php/download_file.php?file_id=' + id;
 }
+

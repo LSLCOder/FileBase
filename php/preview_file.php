@@ -22,11 +22,14 @@ if ($result && mysqli_num_rows($result) === 1) {
 
     if ($fileResult && mysqli_num_rows($fileResult) === 1) {
         $file = mysqli_fetch_assoc($fileResult);
-        $fileContent = htmlspecialchars($file['byte']); // Encoding the byte data
+        $fileContent = $file['byte'];
         $fileType = $file['fileType'];
         $fileName = $file['fileName'];
 
-        echo json_encode(['success' => true, 'fileType' => $fileType, 'fileName' => $fileName, 'fileContent' => $fileContent]);
+        // Encode the file content to base64
+        $base64Content = base64_encode($fileContent);
+
+        echo json_encode(['success' => true, 'fileContent' => $base64Content, 'fileType' => $fileType, 'fileName' => $fileName]);
     } else {
         echo json_encode(['success' => false, 'message' => 'File not found or you do not have permission to view it']);
     }
@@ -34,3 +37,4 @@ if ($result && mysqli_num_rows($result) === 1) {
     echo json_encode(['success' => false, 'message' => 'User not found']);
 }
 ?>
+

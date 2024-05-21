@@ -1,3 +1,6 @@
+<!-- V.1 works but did not delete in the my files-->
+
+
 <?php
 session_start(); // Start the session
 include '../database.php'; // Include the database connection
@@ -22,10 +25,6 @@ if ($result && mysqli_num_rows($result) === 1) {
     // Delete the file from the database
     $deleteQuery = "DELETE FROM file WHERE file_id='$file_id' AND uploader_user_id='$uploaderUserId'";
     if (mysqli_query($connection, $deleteQuery)) {
-        // Log the delete action in file_history
-        $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', '$file_id', 'delete', NOW())";
-        mysqli_query($connection, $historyQuery);
-
         echo json_encode(['success' => true, 'message' => 'File deleted successfully']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to delete file']);

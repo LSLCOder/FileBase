@@ -8,8 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $maxFileSize = 1 * 1024 * 1024; // 1MB limit
-    $maxTotalSizeKB = 10 * 1024; // 10MB limit in KB
+    $maxFileSize = 3 * 1024 * 1024; // 3MB limit
+    $maxTotalSizeKB = 25 * 1024; // 25MB limit in KB
     $validTypes = [
         "application/msword" => "doc",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "docx",
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     if ($_FILES['file']['size'] > $maxFileSize) {
-        echo json_encode(['success' => false, 'message' => 'File size must be less than 1MB']);
+        echo json_encode(['success' => false, 'message' => 'File size must be less than 3MB']);
         exit();
     }
 
@@ -47,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newFileSizeKB = $_FILES['file']['size'] / 1024; // Convert to KB
         $totalSizeKB += $newFileSizeKB;
 
-        if ($totalSizeKB > $maxTotalSizeKB) { // 100MB limit in KB
-            echo json_encode(['success' => false, 'message' => 'Total file size exceeds 100MB limit.']);
+        if ($totalSizeKB > $maxTotalSizeKB) {
+            echo json_encode(['success' => false, 'message' => 'Total file size exceeds 25MB limit.']);
             exit();
         }
 
