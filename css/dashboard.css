@@ -25,6 +25,15 @@ li {
 	--light-purple: #9f73e7;
 	--grey: #eee;
 	--dark-grey: #AAAAAA;
+
+	--light-blue: #5da5db; 
+    --light-red: #f56c6c; 
+	--light-blue: #5da5db;
+    --light-red: #f56c6c; 
+    --light-green: #63c065;
+    --light-orange: #f7b225; 
+    --light-purple: #a285e3; 
+    --light-cyan: #5ccccc; 
 	
 
 
@@ -49,6 +58,7 @@ body {
     background-clip: text;
     color: transparent;
 }
+
 
 /* SIDEBAR */
 #sidebar {
@@ -302,6 +312,7 @@ body {
 	padding-top: 20px;
 	border-top: 1px solid #ddd;
   } 
+
 /* Setting User Modal */
   #settingsModal .modal-content {
     display: flex;
@@ -352,23 +363,23 @@ body {
     flex-direction: column;
     align-items: center;
     font-family: var(--font-family);
-    width: 300px; /* Adjust the width as needed */
+    width: 300px; 
 }
 
 #editFileModal .modal-content form {
     width: 100%;
     max-width: 400px;
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    gap: 16px; /* Add space between items */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column; 
+    gap: 16px; 
+    align-items: center; 
 }
 
 #editFileModal .modal-content form .form-group {
     display: flex;
     align-items: center; 
     flex-grow: 1; 
-    width: 100%; /* Ensure full width */
+    width: 100%; 
 }
 
 #editFileModal .modal-content form .form-group label {
@@ -382,7 +393,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
-    width: 100%; /* Ensure full width */
+    width: 100%; 
 }
 
 #editFileModal .modal-content form input.extension-field {
@@ -392,13 +403,13 @@ body {
 }
 
 #editFileModal .modal-content form .button-group {
-    display: flex; /* Display buttons in a row */
-    width: 100%; /* Ensure full width */
-    gap: 8px; /* Space between buttons */
+    display: flex; 
+    width: 100%;
+    gap: 8px; 
 }
 
 #editFileModal .modal-content form button {
-    flex-grow: 1; /* Allow buttons to grow and take equal space */
+    flex-grow: 1; 
     padding: 10px 20px;
     background-color: var(--purple);
     color: white;
@@ -471,16 +482,17 @@ body {
 #content main .box-info {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-	grid-gap: 24px;
+	grid-gap: 2rem; /* Adjust the gap as needed */
 	margin-top: 36px;
 }
 #content main .box-info li {
-	padding: 24px;
-	background: var(--light);
-	border-radius: 20px;
 	display: flex;
-	align-items: center;
-	grid-gap: 24px;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the left */
+    padding: 24px;
+    background: var(--light);
+    border-radius: 20px;
+    grid-gap: 2.5rem;
 }
 #content main .box-info li .bx {
 	width: 80px;
@@ -495,14 +507,7 @@ body {
 	background: var(--light-purple);
 	color: var(--purple);
 }
-/* #content main .box-info li:nth-child(2) .bx {
-	background: var(--light-yellow);
-	color: var(--yellow);
-}
-#content main .box-info li:nth-child(3) .bx {
-	background: var(--light-orange);
-	color: var(--orange);
-} */
+
 #content main .box-info li .text h3 {
 	font-size: 24px;
 	font-weight: 600;
@@ -511,6 +516,88 @@ body {
 #content main .box-info li .text p {
 	color: var(--dark);	
 }
+
+/* file logo buttons */
+#content main .box-info li .file-logos {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+	margin: 0 50px;
+}
+
+#content main .box-info li .file-logos .file-logo {
+    width: 40px; 
+    height: 40px; 
+    background-color: var(--light);
+    border-radius: 5px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 8px; 
+    margin-right: 10px; 
+    transition: transform 0.2s ease-in-out;
+}
+
+#content main .box-info li .file-logos .file-logo:hover {
+    transform: scale(1.05);
+}
+
+#content main .box-info li .file-logos .file-logo.active {
+    color: var(--light);
+}
+
+/* Example different panel colors based on file type */
+#content main .box-info li .file-logos .file-logo.docx {
+    background-color: var(--light-blue);
+}
+
+#content main .box-info li .file-logos .file-logo.pdf {
+    background-color: var(--light-red);
+}
+
+#content main .box-info li .file-logos .file-logo.png {
+    background-color: var(--light-green); 
+}
+
+#content main .box-info li .file-logos .file-logo.jpg {
+    background-color: var(--light-orange); 
+}
+
+
+#content main .box-info li .file-logos .file-logo.mp3 {
+    background-color: var(--light-purple); 
+}
+
+#content main .box-info li .file-logos .file-logo.mp4 {
+    background-color: var(--light-cyan); 
+}
+
+.sort-buttons {
+	margin-left: 20px;
+	margin-right: 10px;
+	display: flex;
+	justify-content: center; 
+    align-items: center; 
+}
+.sort-buttons button {
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: 18px;
+	color: #666666;
+	transition: color 0.3s, transform 0.3s; /* Add transform transition */
+	padding: 8px 12px;
+	border-radius: 8px;
+	margin-right: 4px;
+	border: 1px solid transparent;
+	transition: border-color 0.3s;
+}
+.sort-buttons button:hover {
+	color: var(--purple);
+	border-color: #ccc;
+	transform: scale(1.05); /* Add scale transformation */
+}
+
 
 /* For tables */
 #content main .table-data {
@@ -577,23 +664,16 @@ body {
     color: #fff;
     font-size: 14px;
     width: 40px; 
-    text-align: center; 
+    text-align: center;
 }
-#content main .table-data .order table td.action-buttons .btn.view {
-    background-color: #3498db;
+#content main .table-data .order table td.action-buttons .btn {
+    background-color: var(--purple);
 }
-#content main .table-data .order table td.action-buttons .btn.download {
-    background-color: #2ecc71;
-}
-#content main .table-data .order table td.action-buttons .btn.edit {
-    background-color: #f39c12;
-}
-#content main .table-data .order table td.action-buttons .btn.delete {
-    background-color: #e74c3c;
-}
+
 #content main .table-data .order table tr:hover {
     background: var(--grey);
 }
+
 #content main .table-data .order table tr td:first-child {
     display: flex;
     align-items: center;
@@ -601,6 +681,61 @@ body {
     padding-left: 6px;
 }
 
+/* History table */
+
+.refresh-button {
+	width: 130px;
+    height: 50px;
+    padding: 0 16px;
+    border-radius: 20px;
+    background: var(--purple); 
+    color: var(--light); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.refresh-button i {
+    font-size: 1rem; 
+    margin-right: 8px;
+}
+
+.refresh-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.clear-button {
+    width: 150px;
+    height: 50px;
+    padding: 0 16px;
+    border-radius: 20px;
+    background: var(--purple);
+    color: var(--light); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-left: 20px;
+}
+
+.clear-button i {
+    font-size: 1rem; 
+    margin-right: 8px;
+}
+
+.clear-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
 
 

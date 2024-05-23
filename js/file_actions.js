@@ -38,13 +38,14 @@ function previewFile(fileId) {
                         previewWindow.document.title = fileName;
 
                         // FOR IMAGES
-                        if (fileType === 'png' || fileType === 'jpeg' || fileType === 'jpg') {
+                        if (fileType === 'png' || fileType === 'jpg') {
                             var previewImg = document.createElement('img');
                             previewImg.src = 'data:' + fileType + ';base64,' + fileContent;
                             previewImg.style.maxWidth = '80%'; 
                             previewImg.style.maxHeight = '80%'; 
                             previewImg.style.display = 'block'; 
                             previewImg.style.margin = 'auto'; 
+                            previewImg.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 1)';
                             var blurredBackground = document.createElement('div');
                             blurredBackground.style.position = 'fixed';
                             blurredBackground.style.top = '0';
@@ -73,9 +74,9 @@ function previewFile(fileId) {
                         else if (fileType === 'mp3') {
                             var audioTag = '<audio controls style="width:70%;display:block;margin:auto;"><source src="data:' + fileType + ';base64,' + fileContent + '" type="audio/mpeg"></audio>';
                             previewWindow.document.body.style.backgroundColor = 'black';
-                            previewWindow.document.body.style.display = 'flex'; // Set display to flex
-                            previewWindow.document.body.style.alignItems = 'center'; // Align items vertically
-                            previewWindow.document.body.style.justifyContent = 'center'; // Justify content horizontally
+                            previewWindow.document.body.style.display = 'flex'; 
+                            previewWindow.document.body.style.alignItems = 'center'; 
+                            previewWindow.document.body.style.justifyContent = 'center'; 
                             previewWindow.document.body.innerHTML = audioTag;
                         
                         }
@@ -85,8 +86,8 @@ function previewFile(fileId) {
                             var pdfTag = '<embed src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;" />';
                             previewWindow.document.body.innerHTML = pdfTag;
                         }
+                        // FOR DOCX
                         else if (fileType === 'docx') {
-                            // Assuming fileContent is the base64-encoded content of the PDF version of the DOCX file
                             var pdfSrc = 'data:application/pdf;base64,' + fileContent;
                             var embedTag = '<embed src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;"></embed>';
                             previewWindow.document.body.innerHTML = embedTag;

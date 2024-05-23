@@ -103,7 +103,7 @@
     <link rel="stylesheet" href="css/landingPage.css">
     <link rel="stylesheet" href="css/auth_modal.css">
     <link rel="icon" href="images/file-regular.png">
-
+    <link rel="icon" href="images/file-regular.png">
     <title>FileBase</title>
 </head>
 <body>
@@ -185,7 +185,7 @@
             </div>
             <div class="field input">
                 <label for="Cpassword">Confirm Password</label>
-                <input type="password" name="Cpassword" id="Cpassword" required>
+                <input type="password" name="Cpassword" id="Cpassword" autocomplete="off" required>
             </div>
             <div class="field">
                 <input type="submit" class="btn" name="signup" value="Signup" required>

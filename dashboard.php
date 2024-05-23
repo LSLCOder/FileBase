@@ -117,7 +117,7 @@ if (isset($_GET['search'])) {
             <i class='bx bx-menu'></i>
             <form id="search-form" class="unique-search-form" action="dashboard.php" method="GET">
                 <div class="form-input">
-                    <input type="search" id="search-input" name="search" placeholder="Search..." value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
+                    <input type="search" id="search-input" name="search" placeholder="Search..." value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>" autocomplete="off">
                     <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
@@ -167,7 +167,7 @@ if (isset($_GET['search'])) {
                     </div>
                     <!-- Button Uploader -->
                     <form id="file-upload-form" action="php/upload.php" method="POST" enctype="multipart/form-data">
-                        <input type="file" id="file-upload" name="file" accept=".docx,.pdf,.png,.jpg,.jpeg,.mp3,.mp4" style="display: none;">
+                        <input type="file" id="file-upload" name="file" accept=".docx,.pdf,.png,.jpg,.mp3,.mp4,.gif" style="display: none;">
                         <label for="file-upload" class="btn-download">
                             <i class='bx bx-plus'></i>
                             <span class="text">File Upload</span>
@@ -177,11 +177,28 @@ if (isset($_GET['search'])) {
                 <!-- Checked MB size -->
                 <ul class="box-info">
                     <li>
-                        <i class='bx bxs-package'></i>
+                    <i class='bx bxs-package' title='Limit size per upload (3MB)'></i>
+
                         <span class="text">
-                            <progress value="0" max="25"></progress>
-                            <p>0mb/25mb</p>
+                        <progress value="0" max="25"></progress>
+                        <p>0mb/25mb</p>
                         </span>
+                        <div class="file-logos">
+                            <span class="file-logo docx" data-filetype="docx" title="Word Document"><i class="fas fa-file-word"></i></span>
+                            <span class="file-logo pdf" data-filetype="pdf" title="PDF Document"><i class="fas fa-file-pdf"></i></span>
+                            <span class="file-logo png" data-filetype="png" title="PNG Image"><i class="fas fa-file-image"></i></span>
+                            <span class="file-logo jpg" data-filetype="jpg" title="JPG Image"><i class="fas fa-file-image"></i></span> 
+                            <span class="file-logo mp3" data-filetype="mp3" title="MP3 Audio"><i class="fas fa-file-audio"></i></span> 
+                            <span class="file-logo mp4" data-filetype="mp4" title="MP4 Video"><i class="fas fa-file-video"></i></span> 
+                        </div>
+                        <div class="sort-buttons">
+                            <button onclick="sortBySize()">
+                                <i class="fas fa-sort-amount-up"></i> Size
+                            </button>
+                            <button onclick="sortByDate()">
+                                <i class="fas fa-sort-numeric-up"></i> Date
+                            </button>
+                        </div>
                     </li>
                 </ul>
                 <!-- Table Files -->
@@ -201,22 +218,22 @@ if (isset($_GET['search'])) {
                                 </tr>
                             </thead>
                             <tbody id="file-table-body">
-                                <?php
+                            <?php
                                 // SEARCH FUNCTION
                                 if (isset($_GET['search'])) {
                                     foreach ($searchResults as $file_row) {
-                                        echo "<tr>
+                                        echo "<tr class='file-row' data-filetype='{$file_row['fileType']}'>
                                             <td>{$file_row['fileName']}</td>
                                             <td>{$file_row['fileSize_KB']} KB</td>
                                             <td>{$file_row['fileType']}</td>
                                             <td>{$file_row['uploadDate']}</td>
-                                                <td class='action-buttons'>
-                                                    <span class='btn view' onclick='previewFile({$file_row['file_id']})'><i class='bx bx-file-find'></i></span>
-                                                    <span class='btn edit' onclick='editFile({$file_row['file_id']})'><i class='bx bxs-edit'></i></span>
-                                                    <span class='btn delete' onclick='deleteFile({$file_row['file_id']})'><i class='bx bxs-trash'></i></span>
-                                                    <span class='btn download' onclick='downloadFile({$file_row['file_id']})'><i class='bx bxs-download'></i></span>
-                                                </td>
-                                            </tr>";
+                                            <td class='action-buttons'>
+                                                <span class='btn view' onclick='previewFile({$file_row['file_id']})'><i class='bx bx-file-find'></i></span>
+                                                <span class='btn edit' onclick='editFile({$file_row['file_id']})'><i class='bx bxs-edit'></i></span>
+                                                <span class='btn delete' onclick='deleteFile({$file_row['file_id']})'><i class='bx bxs-trash'></i></span>
+                                                <span class='btn download' onclick='downloadFile({$file_row['file_id']})'><i class='bx bxs-download'></i></span>
+                                            </td>
+                                        </tr>";
                                     }
                                 } else {
                                     $username = $_SESSION['name'];
@@ -260,7 +277,15 @@ if (isset($_GET['search'])) {
                     <div class="order">
                         <div class="head">
                             <h3>Activity Log</h3>
-                            <button onclick="refreshHistoryTable()" style="margin-left: 10px; padding: 5px 10px; font-size: 16px;">Refresh</button>
+                            <button class="refresh-button" onclick="refreshHistoryTable()">
+                                <i class="fas fa-sync-alt"></i>
+                                <span class="refresh-label">Refresh</span>
+                            </button>
+                            <button class="clear-button">
+                                <i class="fas fa-trash"></i>
+                                <span class="clear-label">Clear All History</span>
+                            </button>
+                      
                         </div>
                         <table>
                             <thead>
@@ -289,6 +314,7 @@ if (isset($_GET['search'])) {
             </div>
         </main>
     </section>
+
     <!-- Modal for Editing File -->
     <div id="editFileModal" class="modal">
         <div class="modal-content">
@@ -311,6 +337,7 @@ if (isset($_GET['search'])) {
     <script src="js/user_modal.js"></script>
     <script src="js/upload_handle.js"></script>
     <script src="js/file_actions.js"></script>
+    <script src="js/history_actions.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
 
@@ -335,5 +362,57 @@ if (isset($_GET['search'])) {
     });
 });
 </script>
+
+    <!-- For Sort tables --> 
+    <script>
+        $(document).ready(function() {
+        $(".file-logo").click(function() {
+            var fileType = $(this).data("filetype");
+            var $rows = $("#file-table-body tr");
+            
+            if ($(this).hasClass("active")) {
+                $rows.show();
+                $(".file-logo").removeClass("active");
+            } else {
+                $rows.hide();
+                $rows.filter("[data-filetype='" + fileType + "']").show();
+                $(".file-logo").removeClass("active");
+                $(this).addClass("active");
+            }
+        });
+    });
+
+    let sortDirectionSize = 'asc';
+    let sortDirectionDate = 'asc';
+
+    function sortBySize() {
+        const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
+        rows.sort((a, b) => {
+            const sizeA = parseInt(a.children[1].textContent.split(' ')[0]);
+            const sizeB = parseInt(b.children[1].textContent.split(' ')[0]);
+            return sortDirectionSize === 'asc' ? sizeA - sizeB : sizeB - sizeA;
+        });
+        document.getElementById('file-table-body').innerHTML = '';
+        rows.forEach(row => {
+            document.getElementById('file-table-body').appendChild(row);
+        });
+        sortDirectionSize = sortDirectionSize === 'asc' ? 'desc' : 'asc';
+    }
+
+    function sortByDate() {
+        const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
+        rows.sort((a, b) => {
+            const dateA = new Date(a.children[3].textContent);
+            const dateB = new Date(b.children[3].textContent);
+            return sortDirectionDate === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+        document.getElementById('file-table-body').innerHTML = '';
+        rows.forEach(row => {
+            document.getElementById('file-table-body').appendChild(row);
+        });
+        sortDirectionDate = sortDirectionDate === 'asc' ? 'desc' : 'asc';
+    }
+    </script>
+    
 </body>
 </html>

@@ -8,8 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $maxFileSize = 3 * 1024 * 1024; // 3MB limit
-    $maxTotalSizeKB = 25 * 1024; // 25MB limit in KB
+    $maxFileSize = 3 * 1024 * 1024; 
+    $maxTotalSizeKB = 25 * 1024; 
     $validTypes = [
         "application/msword" => "doc",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "docx",
