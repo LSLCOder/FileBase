@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $uploaderUserId = $user['user_id'];
 
                 // Log the rename action in file_history
-                $action = "$currentFileName renamed to $newFileNameWithExtension";
+                $action = "RENAME ($currentFileName ----> $newFileNameWithExtension)";
                 $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', '$file_Id', '$action', NOW())";
                 mysqli_query($connection, $historyQuery);
             }

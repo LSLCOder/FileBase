@@ -38,7 +38,7 @@ function previewFile(fileId) {
                         previewWindow.document.title = fileName;
 
                         // FOR IMAGES
-                        if (fileType === 'png' || fileType === 'jpg') {
+                        if (fileType === 'png' || fileType === 'jpg' || fileType === 'gif') {
                             var previewImg = document.createElement('img');
                             previewImg.src = 'data:' + fileType + ';base64,' + fileContent;
                             previewImg.style.maxWidth = '80%'; 
@@ -88,11 +88,11 @@ function previewFile(fileId) {
                         }
                         // FOR DOCX
                         else if (fileType === 'docx') {
-                            var pdfSrc = 'data:application/pdf;base64,' + fileContent;
-                            var embedTag = '<embed src="' + pdfSrc + '" type="application/pdf" style="width:100%;height:100%;"></embed>';
-                            previewWindow.document.body.innerHTML = embedTag;
+                            var docxSrc = 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + fileContent;
+                            var googleDocsViewer = 'https://docs.google.com/viewer?url=' + encodeURIComponent(docxSrc) + '&embedded=true';
+                            var iframeTag = '<iframe src="' + googleDocsViewer + '" style="width:100%;height:100%;border:none;"></iframe>';
+                            previewWindow.document.body.innerHTML = iframeTag;
                         }
-                        
                         
                         //OTHER FILE
                         else {
@@ -117,9 +117,6 @@ function previewFile(fileId) {
     xhr.open('GET', 'php/preview_file.php?file_id=' + fileId, true);
     xhr.send();
 }
-
-
-
 
 
 // EDIT (RENAME)

@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         "application/pdf" => "pdf",
         "image/png" => "png",
         "image/jpeg" => "jpg",
+        "image/gif" => "gif",
         "audio/mpeg" => "mp3",
         "video/mp4" => "mp4"
     ];
@@ -72,8 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->send_long_data(5, $fileData); // send the file data
 
         if ($stmt->execute()) {
+            // Log the upload action in file_history
+            $fileId = $stmt->insert_id; // Get the ID of the newly inserted file
+            $action = "UPLOAD ($fileName)";
+            $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', '$fileId', '$action', NOW())";
+            mysqli_query($connection, $historyQuery);
+
             echo json_encode(['success' => true, 'message' => 'File uploaded successfully!']);
-            
         } else {
             echo json_encode(['success' => false, 'message' => 'Database insertion failed']);
         }

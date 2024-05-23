@@ -26,7 +26,7 @@ if ($result && mysqli_num_rows($result) === 1) {
         $fileType = $file['fileType'];
         $fileName = $file['fileName'];
 
-        // Encode the file content to base64
+        // Encode the file content
         $base64Content = base64_encode($fileContent);
 
         echo json_encode(['success' => true, 'fileContent' => $base64Content, 'fileType' => $fileType, 'fileName' => $fileName]);

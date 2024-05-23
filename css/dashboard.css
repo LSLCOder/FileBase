@@ -24,17 +24,15 @@ li {
 	--purple: #5103cf;
 	--light-purple: #9f73e7;
 	--grey: #eee;
-	--dark-grey: #AAAAAA;
+	--dark-grey: #a8a8a8;
 
 	--light-blue: #5da5db; 
-    --light-red: #f56c6c; 
-	--light-blue: #5da5db;
-    --light-red: #f56c6c; 
+    --light-red: #f56c6c;  
     --light-green: #63c065;
     --light-orange: #f7b225; 
     --light-purple: #a285e3; 
     --light-cyan: #5ccccc; 
-	
+	--light-gray: #a1a1a1; 
 
 
 	/* accent color */
@@ -482,13 +480,13 @@ body {
 #content main .box-info {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-	grid-gap: 2rem; /* Adjust the gap as needed */
+	grid-gap: 1rem; 
 	margin-top: 36px;
 }
 #content main .box-info li {
 	display: flex;
     align-items: center;
-    justify-content: flex-start; /* Align items to the left */
+    justify-content: flex-start; 
     padding: 24px;
     background: var(--light);
     border-radius: 20px;
@@ -563,6 +561,9 @@ body {
     background-color: var(--light-orange); 
 }
 
+#content main .box-info li .file-logos .file-logo.gif {
+    background-color: var(--light-gray); 
+}
 
 #content main .box-info li .file-logos .file-logo.mp3 {
     background-color: var(--light-purple); 

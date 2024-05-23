@@ -1,6 +1,3 @@
-<!-- V.1 works but did not delete in the my files-->
-
-
 <?php
 session_start(); // Start the session
 include '../database.php'; // Include the database connection
@@ -22,12 +19,28 @@ if ($result && mysqli_num_rows($result) === 1) {
     $user = mysqli_fetch_assoc($result);
     $uploaderUserId = $user['user_id'];
 
-    // Delete the file from the database
-    $deleteQuery = "DELETE FROM file WHERE file_id='$file_id' AND uploader_user_id='$uploaderUserId'";
-    if (mysqli_query($connection, $deleteQuery)) {
-        echo json_encode(['success' => true, 'message' => 'File deleted successfully']);
+    // Fetch the current file name from the database
+    $fileQuery = "SELECT fileName FROM file WHERE file_id='$file_id' AND uploader_user_id='$uploaderUserId'";
+    $fileResult = mysqli_query($connection, $fileQuery);
+
+    if ($fileResult && mysqli_num_rows($fileResult) === 1) {
+        $file = mysqli_fetch_assoc($fileResult);
+        $fileName = $file['fileName'];
+
+        // Log the delete action in file_history
+        $action = "DELETE ($fileName)";
+        $historyQuery = "INSERT INTO file_history (user_id, file_id, action, time_action) VALUES ('$uploaderUserId', '$file_id', '$action', NOW())";
+        mysqli_query($connection, $historyQuery);
+
+        // Delete the file from the database
+        $deleteQuery = "DELETE FROM file WHERE file_id='$file_id' AND uploader_user_id='$uploaderUserId'";
+        if (mysqli_query($connection, $deleteQuery)) {
+            echo json_encode(['success' => true, 'message' => 'File deleted successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to delete file']);
+        }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to delete file']);
+        echo json_encode(['success' => false, 'message' => 'File not found or you do not have permission to delete it']);
     }
 } else {
     echo json_encode(['success' => false, 'message' => 'User not found']);

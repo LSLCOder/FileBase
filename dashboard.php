@@ -187,7 +187,8 @@ if (isset($_GET['search'])) {
                             <span class="file-logo docx" data-filetype="docx" title="Word Document"><i class="fas fa-file-word"></i></span>
                             <span class="file-logo pdf" data-filetype="pdf" title="PDF Document"><i class="fas fa-file-pdf"></i></span>
                             <span class="file-logo png" data-filetype="png" title="PNG Image"><i class="fas fa-file-image"></i></span>
-                            <span class="file-logo jpg" data-filetype="jpg" title="JPG Image"><i class="fas fa-file-image"></i></span> 
+                            <span class="file-logo jpg" data-filetype="jpg" title="JPG Image"><i class="fas fa-file-image"></i></span>
+                            <span class="file-logo gif" data-filetype="gif" title="GIF Image"><i class="fas fa-file-image"></i></span> 
                             <span class="file-logo mp3" data-filetype="mp3" title="MP3 Audio"><i class="fas fa-file-audio"></i></span> 
                             <span class="file-logo mp4" data-filetype="mp4" title="MP4 Video"><i class="fas fa-file-video"></i></span> 
                         </div>
@@ -365,53 +366,66 @@ if (isset($_GET['search'])) {
 
     <!-- For Sort tables --> 
     <script>
-        $(document).ready(function() {
-        $(".file-logo").click(function() {
-            var fileType = $(this).data("filetype");
-            var $rows = $("#file-table-body tr");
-            
-            if ($(this).hasClass("active")) {
-                $rows.show();
-                $(".file-logo").removeClass("active");
-            } else {
-                $rows.hide();
-                $rows.filter("[data-filetype='" + fileType + "']").show();
-                $(".file-logo").removeClass("active");
-                $(this).addClass("active");
-            }
-        });
+       $(document).ready(function() {
+    $(".file-logo").click(function() {
+        var fileType = $(this).data("filetype");
+        var $rows = $("#file-table-body tr");
+        
+        if ($(this).hasClass("active")) {
+            $rows.show();
+            $(".file-logo").removeClass("active");
+        } else {
+            $rows.hide();
+            $rows.filter("[data-filetype='" + fileType + "']").show();
+            $(".file-logo").removeClass("active");
+            $(this).addClass("active");
+        }
     });
+});
 
-    let sortDirectionSize = 'asc';
-    let sortDirectionDate = 'asc';
+let sortDirectionSize = 'asc';
+let sortDirectionDate = 'asc';
 
-    function sortBySize() {
-        const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
-        rows.sort((a, b) => {
-            const sizeA = parseInt(a.children[1].textContent.split(' ')[0]);
-            const sizeB = parseInt(b.children[1].textContent.split(' ')[0]);
-            return sortDirectionSize === 'asc' ? sizeA - sizeB : sizeB - sizeA;
-        });
-        document.getElementById('file-table-body').innerHTML = '';
-        rows.forEach(row => {
-            document.getElementById('file-table-body').appendChild(row);
-        });
-        sortDirectionSize = sortDirectionSize === 'asc' ? 'desc' : 'asc';
-    }
+function sortBySize() {
+    const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
+    rows.sort((a, b) => {
+        const sizeA = parseInt(a.children[1].textContent.split(' ')[0]);
+        const sizeB = parseInt(b.children[1].textContent.split(' ')[0]);
+        return sortDirectionSize === 'asc' ? sizeA - sizeB : sizeB - sizeA;
+    });
+    document.getElementById('file-table-body').innerHTML = '';
+    rows.forEach(row => {
+        document.getElementById('file-table-body').appendChild(row);
+    });
+    sortDirectionSize = sortDirectionSize === 'asc' ? 'desc' : 'asc';
+}
 
-    function sortByDate() {
-        const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
-        rows.sort((a, b) => {
-            const dateA = new Date(a.children[3].textContent);
-            const dateB = new Date(b.children[3].textContent);
-            return sortDirectionDate === 'asc' ? dateA - dateB : dateB - dateA;
-        });
-        document.getElementById('file-table-body').innerHTML = '';
-        rows.forEach(row => {
-            document.getElementById('file-table-body').appendChild(row);
-        });
-        sortDirectionDate = sortDirectionDate === 'asc' ? 'desc' : 'asc';
-    }
+function sortByDate() {
+    const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
+    rows.sort((a, b) => {
+        const dateA = new Date(a.children[3].textContent);
+        const dateB = new Date(b.children[3].textContent);
+        return sortDirectionDate === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    document.getElementById('file-table-body').innerHTML = '';
+    rows.forEach(row => {
+        document.getElementById('file-table-body').appendChild(row);
+    });
+    sortDirectionDate = sortDirectionDate === 'asc' ? 'desc' : 'asc';
+}
+
+function sortByFileType(fileType) {
+    const rows = Array.from(document.querySelectorAll('#file-table-body tr'));
+    rows.forEach(row => {
+        const type = row.dataset.filetype;
+        if (type !== fileType) {
+            row.style.display = 'none';
+        } else {
+            row.style.display = '';
+        }
+    });
+}
+
     </script>
     
 </body>
