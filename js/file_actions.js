@@ -1,6 +1,16 @@
 function refreshTable() {
-    // Code to refresh the file table content
-    location.reload();
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                document.getElementById('file-table-body').innerHTML = xhr.responseText;
+            } else {
+                console.error('Failed to fetch updated file data');
+            }
+        }
+    };
+    xhr.open('GET', 'php/fetch_files.php', true);
+    xhr.send();
 }
 
 
@@ -89,11 +99,31 @@ function previewFile(fileId) {
                         // FOR DOCX
                         else if (fileType === 'docx') {
                             var docxSrc = 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + fileContent;
-                            var googleDocsViewer = 'https://docs.google.com/viewer?url=' + encodeURIComponent(docxSrc) + '&embedded=true';
-                            var iframeTag = '<iframe src="' + googleDocsViewer + '" style="width:100%;height:100%;border:none;"></iframe>';
-                            previewWindow.document.body.innerHTML = iframeTag;
+                            
+                            // Fetch the DOCX file as a Blob
+                            fetch(docxSrc)
+                                .then(response => response.blob())
+                                .then(blob => {
+                                    var reader = new FileReader();
+                                    reader.onload = function(event) {
+                                        var arrayBuffer = reader.result;
+                    
+                                        // Use Mammoth to convert the arrayBuffer to HTML
+                                        mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+                                            .then(function(result) {
+                                                var html = result.value; // The generated HTML
+                                                previewWindow.document.body.innerHTML = html;
+                                            })
+                                            .catch(function(error) {
+                                                console.error('Error converting DOCX file:', error);
+                                            });
+                                    };
+                                    reader.readAsArrayBuffer(blob);
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching DOCX file:', error);
+                                });
                         }
-                        
                         //OTHER FILE
                         else {
                             var downloadLink = document.createElement('a');
